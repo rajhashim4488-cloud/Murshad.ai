@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Murshad AI - Heavy Cyber Scripting Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#0b0f19',
+                            card: '#121826',
+                            cardHover: '#1a2235',
+                            border: '#1f2d45',
+                            accent: '#00f3ff',
+                            green: '#00ff66',
+                            purple: '#9d4edd',
+                            pink: '#ff0055',
+                            yellow: '#ffcc00'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .cyber-glass {
+            background: rgba(18, 24, 38, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+        }
+
+        .neon-border-cyan {
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.25), inset 0 0 10px rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.5);
+        }
+
+        .neon-border-purple {
+            box-shadow: 0 0 15px rgba(157, 78, 221, 0.3);
+            border: 1px solid rgba(157, 78, 221, 0.5);
+        }
+
+        .neon-glow-text {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+        }
+
+        .neon-glow-green {
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.7);
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2d45;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f3ff;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px #00f3ff); }
+            50% { opacity: 0.6; filter: drop-shadow(0 0 2px #00f3ff); }
+        }
+        .pulse-online {
+            animation: pulse-glow 2s infinite;
+        }
+
+        /* Toast notification */
+        #toast {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-cyber-accent selection:text-black">
+
+    <!-- TOP HEADER -->
+    <header class="bg-cyber-card/90 backdrop-blur-md border-b border-cyber-border sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-3 py-2.5 flex items-center justify-between">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <div class="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-purple via-cyber-accent to-cyber-green flex items-center justify-center p-0.5 shadow-lg">
+                    <div class="w-full h-full bg-cyber-bg rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-user-ninja text-cyber-accent text-xl"></i>
+                    </div>
+                    <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-cyber-green rounded-full border-2 border-cyber-bg pulse-online"></span>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-orbitron font-extrabold tracking-wider bg-gradient-to-r from-cyber-accent via-white to-cyber-green bg-clip-text text-transparent">
+                        MURSHAD AI
+                    </h1>
+                    <p class="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+                        <span class="text-cyber-green font-bold">[ONLINE]</span>
+                        <span>Full Heavy Cyber Scripting Hub</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex items-center gap-2">
+                <!-- Voice Speaker Toggle -->
+                <button id="ttsToggle" title="Voice Response Toggle" class="px-2.5 py-1.5 bg-cyber-bg border border-cyber-border hover:border-cyber-accent rounded-lg text-slate-300 hover:text-cyber-accent transition flex items-center gap-1 text-xs font-mono">
+                    <i id="ttsIcon" class="fa-solid fa-volume-high text-cyber-accent"></i>
+                    <span class="hidden sm:inline">Voice</span>
+                </button>
+
+                <!-- Clear Chat -->
+                <button onclick="clearChat()" title="Clear Chat History" class="p-2 bg-cyber-bg border border-cyber-border hover:border-cyber-pink rounded-lg text-slate-400 hover:text-cyber-pink transition text-xs">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION TABS -->
+        <div class="bg-cyber-bg/80 border-t border-cyber-border/60 px-2 py-1.5 flex overflow-x-auto no-scrollbar gap-1 text-xs font-orbitron">
+            <button onclick="switchTab('chat')" id="tab-chat" class="flex-1 min-w-[100px] py-1.5 px-3 rounded-lg font-bold text-cyber-accent bg-cyber-card border border-cyber-accent/40 text-center transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-robot"></i> AI CHATBOT
+            </button>
+            <button onclick="switchTab('scripts')" id="tab-scripts" class="flex-1 min-w-[110px] py-1.5 px-3 rounded-lg font-bold text-slate-400 hover:text-white text-center transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-code"></i> SCRIPTS & TOOLS
+            </button>
+            <button onclick="switchTab('cheatsheet')" id="tab-cheatsheet" class="flex-1 min-w-[120px] py-1.5 px-3 rounded-lg font-bold text-slate-400 hover:text-white text-center transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-terminal"></i> TERMUX COMMANDS
+            </button>
+            <button onclick="switchTab('apk')" id="tab-apk" class="flex-1 min-w-[100px] py-1.5 px-3 rounded-lg font-bold text-slate-400 hover:text-white text-center transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-mobile-screen-button"></i> APK BUILD
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="max-w-7xl mx-auto w-full flex-grow p-2 sm:p-4 gap-4 h-[calc(100vh-120px)] flex flex-col">
+
+        <!-- TAB 1: AI CHATBOT -->
+        <section id="section-chat" class="flex flex-col h-full bg-cyber-card rounded-xl border border-cyber-border shadow-2xl overflow-hidden relative">
+            
+            <!-- Chat Info Bar -->
+            <div class="px-3 py-2 bg-cyber-bg/90 border-b border-cyber-border flex justify-between items-center text-xs font-mono text-slate-400">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-cyber-green animate-ping"></span>
+                    <span class="text-cyber-accent font-bold">Murshad AI v3.0</span>
+                    <span class="hidden sm:inline text-slate-500">| Python, Termux, C++, Java & Games Expert</span>
+                </div>
+                <span class="text-[10px] bg-cyber-border px-2 py-0.5 rounded text-cyber-green font-bold">HINGLISH MODE</span>
+            </div>
+
+            <!-- Messages Box -->
+            <div id="chatMessages" class="flex-grow p-3 sm:p-4 overflow-y-auto space-y-3.5">
+                
+                <!-- Welcome Message from Murshad AI -->
+                <div class="flex items-start gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyber-accent to-cyber-purple flex items-center justify-center shrink-0 text-black font-bold text-xs shadow-md font-orbitron">
+                        M
+                    </div>
+                    <div class="max-w-[88%] sm:max-w-[80%] bg-cyber-bg/95 border border-cyber-border rounded-2xl p-3.5 text-slate-200 shadow-lg">
+                        <div class="flex items-center justify-between border-b border-cyber-border/60 pb-1 mb-2">
+                            <span class="text-xs font-orbitron font-bold text-cyber-accent tracking-wider">MURSHAD AI</span>
+                            <span class="text-[10px] font-mono text-slate-500">System Ready</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-2 font-sans">
+                            Salam Murshad! 🚀 Main hoon tera heavy cyber coding partner **Murshad AI**!
+                        </p>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                            Mujhe **Python, C++, Java, Linux, Termux Commands**, Automation Scripts aur **Single-File HTML Web Games** ki full heavy knowledge hai. Aap jo bologe complete code tayar karke dunga!
+                        </p>
+                        
+                        <!-- Quick Prompts -->
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <button onclick="sendQuickPrompt('Write a Python script for Termux file auto backup')" class="text-[11px] bg-cyber-border/50 hover:bg-cyber-accent/20 hover:text-cyber-accent text-slate-300 border border-cyber-border px-2.5 py-1 rounded-lg transition font-mono">
+                                🐍 Termux Python Backup Tool
+                            </button>
+                            <button onclick="sendQuickPrompt('Give me C++ source code for a fast snake game')" class="text-[11px] bg-cyber-border/50 hover:bg-cyber-accent/20 hover:text-cyber-accent text-slate-300 border border-cyber-border px-2.5 py-1 rounded-lg transition font-mono">
+                                ⚡ C++ Fast Snake Game
+                            </button>
+                            <button onclick="sendQuickPrompt('Give top Termux setup commands for Linux tools')" class="text-[11px] bg-cyber-border/50 hover:bg-cyber-accent/20 hover:text-cyber-accent text-slate-300 border border-cyber-border px-2.5 py-1 rounded-lg transition font-mono">
+                                💻 Termux Master Commands
+                            </button>
+                            <button onclick="sendQuickPrompt('Create an HTML CSS JS Space Shooter Game in single file')" class="text-[11px] bg-cyber-border/50 hover:bg-cyber-accent/20 hover:text-cyber-accent text-slate-300 border border-cyber-border px-2.5 py-1 rounded-lg transition font-mono">
+                                🎮 Complete HTML Web Game
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Chat Input Bar -->
+            <div class="p-2.5 bg-cyber-bg border-t border-cyber-border">
+                <form id="chatForm" onsubmit="handleChatSubmit(event)" class="flex items-center gap-2">
+                    <input id="userInput" type="text" placeholder="Bolo Murshad, kya script ya game banani hai..." 
+                        class="flex-grow bg-cyber-card text-slate-100 placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm border border-cyber-border focus:border-cyber-accent focus:ring-1 focus:ring-cyber-accent outline-none font-sans"
+                        autocomplete="off" />
+                    
+                    <button type="submit" id="sendBtn" class="h-10 px-4 bg-gradient-to-r from-cyber-accent to-cyber-green hover:opacity-90 text-black font-orbitron font-bold text-xs rounded-xl flex items-center justify-center transition shadow-lg shrink-0">
+                        <i class="fa-solid fa-paper-plane mr-1"></i> SEND
+                    </button>
+                </form>
+            </div>
+
+        </section>
+
+        <!-- TAB 2: SCRIPTS & CODE GENERATOR -->
+        <section id="section-scripts" class="hidden flex-col h-full bg-cyber-card rounded-xl border border-cyber-border p-4 overflow-y-auto space-y-4">
+            <div>
+                <h2 class="text-lg font-orbitron font-bold text-cyber-accent flex items-center gap-2">
+                    <i class="fa-solid fa-code-branch"></i> Instant Heavy Script Generator
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Click any button below to instantly load pre-built heavy scripts or code templates.</p>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                
+                <!-- Python -->
+                <div class="bg-cyber-bg p-3 rounded-xl border border-cyber-border">
+                    <div class="flex items-center gap-2 text-cyber-accent font-bold text-xs mb-2">
+                        <i class="fa-brands fa-python text-base"></i> PYTHON HEAVY SCRIPTS
+                    </div>
+                    <div class="space-y-1.5">
+                        <button onclick="generateTemplate('python-bot')" class="w-full text-left text-xs bg-cyber-card hover:bg-cyber-accent/15 hover:text-cyber-accent p-2 rounded-lg border border-cyber-border text-slate-300 transition font-mono">
+                            🤖 Telegram Heavy Bot Script
+                        </button>
+                        <button onclick="generateTemplate('python-scraper')" class="w-full text-left text-xs bg-cyber-card hover:bg-cyber-accent/15 hover:text-cyber-accent p-2 rounded-lg border border-cyber-border text-slate-300 transition font-mono">
+                            🌐 Fast Web Scraper Engine
+                        </button>
+                        <button onclick="generateTemplate('python-scanner')" class="w-full text-left text-xs bg-cyber-card hover:bg-cyber-accent/15 hover:text-cyber-accent p-2 rounded-lg border border-cyber-border text-slate-300 transition font-mono">
+                            🔍 Multi-Threaded Port Scanner
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Termux & Bash -->
+                <div class="bg-cyber-bg p-3 rounded-xl border border-cyber-border">
+                    <div class="flex items-center gap-2 text-cyber-green font-bold text-xs mb-2">
+                        <i class="fa-solid fa-terminal text-base"></i> TERMUX & BASH SCRIPTS
+                    </div>
+                    <div class="space-y-1.5">
+                        <button onclick="generateTemplate('termux-setup')" class="w-full text-left text-xs bg-cyber-card hover:bg-cyber-green/15 hover:text-cyber-green p-2 rounded-lg border border-cyber-border text-slate-300 transition font-mono">
+                            🚀 Termux Full Auto Setup (.sh)
+                        </button>
+                        <button onclick="generateTemplate('termux-banner')" class="w-full text-left text-xs bg-cyber-card hover:bg-cyber-green/15 hover:text-cyber-green p-2 rounded-lg border border-cyber-border text-slate-300 transition font-mono">
+                            🎨 Custom Cyber Banner Generator
+                        </button>
+                    </div>
+                </div>
+
+                <!-- C++ & Java -->
+                <div class="bg-cyber-bg p-3 rounded-xl border border-cyber-border">
+                    <div class="flex items-center gap-2 text-cyber-purple font-bold text-xs mb-2">
+                        <i class="fa-solid fa-laptop-code text-base"></i> C++ & JAVA UTILITIES
+                    </div>
+                    <div class="space-y-1.5">
+                        <button onclick="generateTemplate('cpp-game')" class="w-full text-left text-xs bg-cyber-card hover:bg-cyber-purple/15 hover:text-cyber-purple p-2 rounded-lg border border-cyber-border text-slate-300 transition font-mono">
+                            🎮 C++ Tic-Tac-Toe Game Engine
+                        </button>
+                        <button onclick="generateTemplate('java-vault')" class="w-full text-left text-xs bg-cyber-card hover:bg-cyber-purple/15 hover:text-cyber-purple p-2 rounded-lg border border-cyber-border text-slate-300 transition font-mono">
+                            🔒 Java Encrypted File Vault
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Code Preview Box -->
+            <div class="bg-cyber-bg rounded-xl border border-cyber-border p-3 flex flex-col flex-grow">
+                <div class="flex items-center justify-between pb-2 border-b border-cyber-border">
+                    <span id="templateTitle" class="text-xs font-orbitron font-bold text-cyber-accent">Python Telegram Bot Template</span>
+                    <button onclick="copyGeneratedCode()" class="text-xs bg-cyber-card border border-cyber-border hover:border-cyber-accent px-2.5 py-1 rounded text-slate-300 hover:text-cyber-accent transition font-mono">
+                        <i class="fa-regular fa-copy mr-1"></i> Copy Script
+                    </button>
+                </div>
+                <pre class="mt-2 text-xs text-cyan-300 font-mono overflow-x-auto p-3 bg-cyber-card rounded-lg border border-cyber-border/60 max-h-[280px]"><code id="templateCode">// Script load ho raha hai...</code></pre>
+            </div>
+        </section>
+
+        <!-- TAB 3: TERMUX COMMAND CHEAT SHEET -->
+        <section id="section-cheatsheet" class="hidden flex-col h-full bg-cyber-card rounded-xl border border-cyber-border p-4 overflow-y-auto space-y-4">
+            <div>
+                <h2 class="text-lg font-orbitron font-bold text-cyber-green flex items-center gap-2">
+                    <i class="fa-solid fa-terminal"></i> Termux & Linux Command Sheet
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">One-tap copy essential Termux setup commands and package installers.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- Package Setup -->
+                <div class="bg-cyber-bg p-3 rounded-xl border border-cyber-border">
+                    <h3 class="text-xs font-orbitron font-bold text-cyber-accent mb-2 pb-1 border-b border-cyber-border">📦 Essential Packages Setup</h3>
+                    <div class="space-y-1.5 font-mono text-xs">
+                        <div class="flex justify-between items-center bg-cyber-card p-2 rounded border border-cyber-border">
+                            <span class="text-cyan-300 select-all">pkg update && pkg upgrade -y</span>
+                            <button onclick="copyText('pkg update && pkg upgrade -y')" class="text-slate-400 hover:text-cyber-accent"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <div class="flex justify-between items-center bg-cyber-card p-2 rounded border border-cyber-border">
+                            <span class="text-cyan-300 select-all">pkg install python python-pip -y</span>
+                            <button onclick="copyText('pkg install python python-pip -y')" class="text-slate-400 hover:text-cyber-accent"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <div class="flex justify-between items-center bg-cyber-card p-2 rounded border border-cyber-border">
+                            <span class="text-cyan-300 select-all">termux-setup-storage</span>
+                            <button onclick="copyText('termux-setup-storage')" class="text-slate-400 hover:text-cyber-accent"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <div class="flex justify-between items-center bg-cyber-card p-2 rounded border border-cyber-border">
+                            <span class="text-cyan-300 select-all">pkg install git clang cmake -y</span>
+                            <button onclick="copyText('pkg install git clang cmake -y')" class="text-slate-400 hover:text-cyber-accent"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Linux Shell File Commands -->
+                <div class="bg-cyber-bg p-3 rounded-xl border border-cyber-border">
+                    <h3 class="text-xs font-orbitron font-bold text-cyber-purple mb-2 pb-1 border-b border-cyber-border">⚡ File & Execution Commands</h3>
+                    <div class="space-y-1.5 font-mono text-xs">
+                        <div class="flex justify-between items-center bg-cyber-card p-2 rounded border border-cyber-border">
+                            <span class="text-cyan-300 select-all">chmod +x script.sh && ./script.sh</span>
+                            <button onclick="copyText('chmod +x script.sh && ./script.sh')" class="text-slate-400 hover:text-cyber-accent"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <div class="flex justify-between items-center bg-cyber-card p-2 rounded border border-cyber-border">
+                            <span class="text-cyan-300 select-all">python -m pip install -r requirements.txt</span>
+                            <button onclick="copyText('python -m pip install -r requirements.txt')" class="text-slate-400 hover:text-cyber-accent"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <div class="flex justify-between items-center bg-cyber-card p-2 rounded border border-cyber-border">
+                            <span class="text-cyan-300 select-all">g++ main.cpp -o main && ./main</span>
+                            <button onclick="copyText('g++ main.cpp -o main && ./main')" class="text-slate-400 hover:text-cyber-accent"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <div class="flex justify-between items-center bg-cyber-card p-2 rounded border border-cyber-border">
+                            <span class="text-cyan-300 select-all">ls -la --color=auto</span>
+                            <button onclick="copyText('ls -la --color=auto')" class="text-slate-400 hover:text-cyber-accent"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: APK BUILDER & EXPORT -->
+        <section id="section-apk" class="hidden flex-col h-full bg-cyber-card rounded-xl border border-cyber-border p-4 overflow-y-auto space-y-4">
+            <div>
+                <h2 class="text-lg font-orbitron font-bold text-cyber-yellow flex items-center gap-2">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Mobile APK Conversion Ready
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Is poori web app ko direct Android App (APK) mein convert karne ke instructions aur full code copy option.</p>
+            </div>
+
+            <div class="bg-cyber-bg p-4 rounded-xl border border-cyber-border space-y-3">
+                <h3 class="text-xs font-orbitron font-bold text-cyber-accent">📲 Steps to convert Murshad AI into Android App (APK):</h3>
+                <ol class="list-decimal list-inside space-y-2 text-xs text-slate-300 font-sans">
+                    <li>Copy this full HTML code using the button below.</li>
+                    <li>Save it as <code class="text-cyber-green font-mono bg-cyber-card px-1 rounded">index.html</code> on your mobile or PC.</li>
+                    <li>Use free App Builder platforms like **Web2App**, **Website2APK Generator**, **Kodular**, or **Sketchware**.</li>
+                    <li>Upload <code class="text-cyber-green font-mono bg-cyber-card px-1 rounded">index.html</code> into the assets folder and set WebView URL to local asset.</li>
+                    <li>Build APK and install on your phone for a dedicated Murshad AI Mobile App!</li>
+                </ol>
+
+                <div class="pt-2 flex gap-2">
+                    <button onclick="copyFullAppSource()" class="px-4 py-2 bg-gradient-to-r from-cyber-accent to-cyber-green text-black font-orbitron font-bold text-xs rounded-lg transition shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-copy"></i> COPY FULL SINGLE-FILE HTML SOURCE CODE
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-14 left-1/2 -translate-x-1/2 bg-cyber-card border border-cyber-accent text-cyber-accent px-4 py-2 rounded-xl text-xs font-mono shadow-2xl opacity-0 pointer-events-none z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-cyber-green"></i>
+        <span id="toastMsg">Code Copied!</span>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-cyber-bg border-t border-cyber-border text-center py-2 text-[11px] font-mono text-slate-500">
+        MURSHAD AI CYBER HUB • Full Heavy Romanized Hinglish Scripting Engine
+    </footer>
+
+    <!-- JAVASCRIPT ENGINE -->
+    <script>
+        // API Config
+        const apiKey = ""; // API Key handled automatically in runtime Canvas
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+        let isTTSEnabled = true;
+        let chatHistory = [];
+
+        // STRICT ROMANIZED HINGLISH SYSTEM PROMPT FOR MURSHAD AI
+        const MURSHAD_HINGLISH_SYSTEM = `
+You are 'Murshad AI', a world-class heavy cyber coding expert and scripting assistant.
+STRICT RESPONSE RULES:
+1. Speak ONLY in energetic, brotherly, Romanized HINGLISH (English + Hindi blend written in English alphabet, e.g., 'Haan bhai Murshad, batao kya script banani hai?').
+2. NEVER use Hindi Devanagari script or standard Hindi font. ONLY use English letters for Hinglish speech.
+3. Expertise: Python, C++, Java, Linux, Termux Commands, Shell scripts, and HTML5 canvas games.
+4. Always provide 100% complete, runnable, well-commented code inside standard markdown blocks (\`\`\`python, \`\`\`bash, \`\`\`cpp, \`\`\`html, \`\`\`java).
+5. Tone: Energetic, respectful, expert cyber bro ("Suno bhai", "Dekho Murshad", "Yeh rha full code", "Done ho gaya").
+`;
+
+        // Tab Navigation
+        function switchTab(tabName) {
+            const tabs = ['chat', 'scripts', 'cheatsheet', 'apk'];
+            tabs.forEach(t => {
+                const sec = document.getElementById(`section-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabName) {
+                    sec.classList.remove('hidden');
+                    sec.classList.add('flex');
+                    btn.classList.add('text-cyber-accent', 'bg-cyber-card', 'border', 'border-cyber-accent/40');
+                    btn.classList.remove('text-slate-400');
+                } else {
+                    sec.classList.add('hidden');
+                    sec.classList.remove('flex');
+                    btn.classList.remove('text-cyber-accent', 'bg-cyber-card', 'border', 'border-cyber-accent/40');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+        }
+
+        // Quick Prompt Trigger
+        function sendQuickPrompt(promptText) {
+            document.getElementById('userInput').value = promptText;
+            switchTab('chat');
+            document.getElementById('sendBtn').click();
+        }
+
+        // Voice TTS Toggle
+        const ttsToggle = document.getElementById('ttsToggle');
+        const ttsIcon = document.getElementById('ttsIcon');
+
+        ttsToggle.addEventListener('click', () => {
+            isTTSEnabled = !isTTSEnabled;
+            if (isTTSEnabled) {
+                ttsIcon.className = "fa-solid fa-volume-high text-cyber-accent";
+                showToast("Voice Response Enabled!");
+            } else {
+                ttsIcon.className = "fa-solid fa-volume-xmark text-slate-500";
+                window.speechSynthesis.cancel();
+                showToast("Voice Response Disabled!");
+            }
+        });
+
+        function speakHinglishText(text) {
+            if (!isTTSEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            
+            // Clean markdown code blocks from speech
+            const speechClean = text.replace(/```[\s\S]*?```/g, "Code generation completed.").replace(/[#*_`]/g, "");
+            const utterance = new SpeechSynthesisUtterance(speechClean.substring(0, 220));
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Handle Chat Submission
+        async function handleChatSubmit(e) {
+            if (e) e.preventDefault();
+
+            const inputEl = document.getElementById('userInput');
+            const messageText = inputEl.value.trim();
+            if (!messageText) return;
+
+            renderMessage(messageText, 'user');
+            inputEl.value = '';
+
+            chatHistory.push({
+                role: 'user',
+                parts: [{ text: messageText }]
+            });
+
+            const typingId = renderTypingIndicator();
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: chatHistory,
+                        systemInstruction: {
+                            parts: [{ text: MURSHAD_HINGLISH_SYSTEM }]
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                removeMessage(typingId);
+
+                const aiReply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Haan bhai, server response me error aya. Dobara try karo!";
+
+                chatHistory.push({
+                    role: 'model',
+                    parts: [{ text: aiReply }]
+                });
+
+                renderMessage(aiReply, 'ai');
+                speakHinglishText(aiReply);
+
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                removeMessage(typingId);
+                renderMessage("Bhai, network issue ya API response timeout ho gaya. Ek baar refresh karke try karo!", 'ai');
+            }
+        }
+
+        // Render Chat Messages
+        function renderMessage(text, sender) {
+            const container = document.getElementById('chatMessages');
+            const msgDiv = document.createElement('div');
+            const isUser = sender === 'user';
+            
+            msgDiv.className = `flex items-start gap-2.5 ${isUser ? 'justify-end' : ''}`;
+
+            let formattedText = formatMarkdownCode(text);
+
+            msgDiv.innerHTML = `
+                ${!isUser ? `
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyber-accent to-cyber-purple flex items-center justify-center shrink-0 text-black font-bold text-xs shadow-md font-orbitron">
+                        M
+                    </div>
+                ` : ''}
+
+                <div class="max-w-[88%] sm:max-w-[80%] ${isUser ? 'bg-cyber-purple/20 border-cyber-purple/50 text-slate-100' : 'bg-cyber-bg/95 border-cyber-border text-slate-200'} border rounded-2xl p-3.5 shadow-md">
+                    <div class="flex items-center justify-between border-b border-cyber-border/40 pb-1 mb-1.5 text-[10px] font-mono text-slate-400">
+                        <span class="font-bold ${isUser ? 'text-cyber-purple' : 'text-cyber-accent'}">${isUser ? 'YOU' : 'MURSHAD AI'}</span>
+                        <span>${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                    <div class="text-xs sm:text-sm leading-relaxed space-y-2 font-sans">
+                        ${formattedText}
+                    </div>
+                </div>
+
+                ${isUser ? `
+                    <div class="w-8 h-8 rounded-lg bg-cyber-border flex items-center justify-center shrink-0 text-slate-300 font-bold text-xs">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                ` : ''}
+            `;
+
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Typing Indicator
+        function renderTypingIndicator() {
+            const container = document.getElementById('chatMessages');
+            const id = 'typing-' + Date.now();
+            const typingDiv = document.createElement('div');
+            typingDiv.id = id;
+            typingDiv.className = "flex items-start gap-2.5";
+            typingDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyber-accent to-cyber-purple flex items-center justify-center shrink-0 text-black font-bold text-xs shadow-md font-orbitron">
+                    M
+                </div>
+                <div class="bg-cyber-bg border border-cyber-border rounded-2xl px-3.5 py-2.5 text-slate-400 text-xs flex items-center gap-2 font-mono">
+                    <i class="fa-solid fa-circle-notch fa-spin text-cyber-accent"></i>
+                    <span>Murshad AI heavy code compile kar raha hai...</span>
+                </div>
+            `;
+            container.appendChild(typingDiv);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function removeMessage(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // Format Markdown Code Block Replacement
+        function formatMarkdownCode(text) {
+            const codeBlockRegex = /```([a-zA-Z0-9_+-]*)\n([\s\S]*?)```/g;
+            let formatted = text.replace(codeBlockRegex, (match, lang, code) => {
+                const encodedCode = encodeURIComponent(code);
+                return `
+                    <div class="my-2.5 rounded-lg bg-cyber-bg border border-cyber-border overflow-hidden">
+                        <div class="bg-cyber-card px-3 py-1 flex justify-between items-center border-b border-cyber-border text-[11px] text-slate-400 font-mono">
+                            <span class="text-cyber-accent uppercase font-bold"><i class="fa-solid fa-code mr-1"></i> ${lang || 'SCRIPT'}</span>
+                            <button onclick="copyCodeFromData(this)" data-code="${encodedCode}" class="hover:text-cyber-green transition text-[10px] bg-cyber-bg px-2 py-0.5 rounded border border-cyber-border font-mono">
+                                <i class="fa-regular fa-copy"></i> COPY CODE
+                            </button>
+                        </div>
+                        <pre class="p-2.5 text-xs overflow-x-auto text-cyan-300 font-mono"><code>${escapeHtml(code.trim())}</code></pre>
+                    </div>
+                `;
+            });
+
+            return formatted.replace(/\n/g, '<br>');
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function copyCodeFromData(btn) {
+            const rawCode = decodeURIComponent(btn.getAttribute('data-code'));
+            copyText(rawCode);
+        }
+
+        function copyText(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast("Copied to Clipboard!");
+        }
+
+        function copyFullAppSource() {
+            copyText(document.documentElement.outerHTML);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2000);
+        }
+
+        function clearChat() {
+            chatHistory = [];
+            document.getElementById('chatMessages').innerHTML = `
+                <div class="text-center py-6 text-xs text-slate-500 font-mono">
+                    <i class="fa-solid fa-broom text-base mb-1"></i>
+                    <p>Chat cleared bhai! Naya sawal pucho.</p>
+                </div>
+            `;
+            showToast("Chat Cleared!");
+        }
+
+        // Script Generator Preset Templates
+        const TEMPLATES = {
+            'python-bot': `# Telegram Heavy Echo & Command Bot (Python)
+import logging
+from telegram import Update
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
+
+logging.basicConfig(level=logging.INFO)
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Salam Murshad! Welcome to Murshad AI Heavy Telegram Bot.")
+
+if __name__ == '__main__':
+    app = ApplicationBuilder().token("YOUR_TELEGRAM_BOT_TOKEN").build()
+    app.add_handler(CommandHandler("start", start))
+    print("Murshad AI Bot Is Running...")
+    app.run_polling()`,
+
+            'python-scraper': `# Fast Web Scraper Engine (Python)
+import requests
+from bs4 import BeautifulSoup
+
+url = "https://news.ycombinator.com/"
+headers = {"User-Agent": "Mozilla/5.0"}
+
+response = requests.get(url, headers=headers)
+if response.status_code == 200:
+    soup = BeautifulSoup(response.text, 'html.parser')
+    titles = soup.find_all('span', class_='titleline')
+    for idx, title in enumerate(titles[:10], 1):
+        print(f"{idx}. {title.text}")
+else:
+    print("Website fetch failed.")`,
+
+            'python-scanner': `# Multi-Threaded Fast Port Scanner (Python)
+import socket
+
+target = "127.0.0.1"
+ports = [21, 22, 80, 443, 8080, 3306]
+
+print(f"Scanning target: {target}")
+for port in ports:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(1.0)
+    result = sock.connect_ex((target, port))
+    if result == 0:
+        print(f"[+] Port {port} is OPEN!")
+    else:
+        print(f"[-] Port {port} is CLOSED.")
+    sock.close()`,
+
+            'termux-setup': `#!/data/data/com.termux/files/usr/bin/bash
+# Murshad AI Termux Automated Installer
+
+echo -e "\\e[1;32m[+] Updating Repositories...\\e[0m"
+pkg update -y && pkg upgrade -y
+
+echo -e "\\e[1;34m[+] Installing Python, Git, C++ & Curl...\\e[0m"
+pkg install python python-pip git clang cmake curl wget nano -y
+
+echo -e "\\e[1;35m[+] Setting up Storage...\\e[0m"
+termux-setup-storage
+
+echo -e "\\e[1;32m[✓] All Tools Installed! Murshad AI Ready.\\e[0m"`,
+
+            'termux-banner': `#!/data/data/com.termux/files/usr/bin/bash
+# Custom Cyber Banner
+clear
+echo -e "\\e[1;36m"
+echo "  __  __ _   _ ____  ____  _  _    _    ____  "
+echo " |  \\/  | | | |  _ \\/ ___|| || |  / \\  |  _ \\ "
+echo " | |\\/| | | | | |_) \\___ \\| || |_/ _ \\ | | | |"
+echo " |_|  |_| |_| |_| \\_\\____/|__   /_/   \\|_| |_|"
+echo -e "\\e[0m"
+echo -e "\\e[1;32m   ---> Welcome to Murshad Cyber Terminal <---\\e[0m\\n"`,
+
+            'cpp-game': `// C++ Fast Tic Tac Toe Game Logic
+#include <iostream>
+using namespace std;
+
+char board[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
+
+void displayBoard() {
+    cout << "  " << board[0][0] << " | " << board[0][1] << " | " << board[0][2] << endl;
+    cout << " ---|---|---" << endl;
+    cout << "  " << board[1][0] << " | " << board[1][1] << " | " << board[1][2] << endl;
+    cout << " ---|---|---" << endl;
+    cout << "  " << board[2][0] << " | " << board[2][1] << " | " << board[2][2] << endl;
+}
+
+int main() {
+    cout << "=== Murshad AI C++ Tic-Tac-Toe Engine ===" << endl;
+    displayBoard();
+    return 0;
+}`,
+
+            'java-vault': `// Java File Vault Encryption Logic
+import java.util.Scanner;
+
+public class FileVault {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("=== Murshad AI Encrypted Vault ===");
+        System.out.print("Enter Master Secret Key: ");
+        String key = scanner.nextLine();
+        
+        if(key.equals("murshad123")) {
+            System.out.println("[SUCCESS] Access Granted!");
+        } else {
+            System.out.println("[DENIED] Invalid Passcode.");
+        }
+    }
+}`
+        };
+
+        function generateTemplate(key) {
+            const code = TEMPLATES[key] || "// Code template not found.";
+            document.getElementById('templateCode').innerText = code;
+            document.getElementById('templateTitle').innerText = `Loaded Script: ${key.toUpperCase()}`;
+            showToast("Script Loaded!");
+        }
+
+        function copyGeneratedCode() {
+            const code = document.getElementById('templateCode').innerText;
+            copyText(code);
+        }
+
+        window.onload = function() {
+            generateTemplate('python-bot');
+        }
+    </script>
+</body>
+</html>
